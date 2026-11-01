@@ -576,3 +576,21 @@ button { font-family: inherit; }
   .mobile-nav__scrim { display: block; position: fixed; inset: var(--header-h) 0 0; background: rgba(27, 27, 24, .32); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
   .mobile-nav__scrim--open { opacity: 1; pointer-events: auto; }
 }
+
+body { overflow-x: hidden; }
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .header__inner { gap: 16px; }
+  .nav { gap: 14px; }
+  .nav__link { font-size: 0.78rem; }
+  .header__actions { gap: 8px; }
+}
+
+@media (max-width: 1279px) {
+  .header__phone-text { display: none; }
+}
+
+@media (max-width: 1023px) {
+  .nav { display: none; }
+  .nav-toggle { display: inline-grid; }
+}

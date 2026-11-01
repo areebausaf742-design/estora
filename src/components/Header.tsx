@@ -32,7 +32,7 @@ export function Header() {
                 to={link.href}
                 end={link.href === '/'}
                 className={({ isActive }) =>
-                  `nav__link${isActive ? ' nav__link--active' : ''}`
+                  `nav__link whitespace-nowrap${isActive ? ' nav__link--active' : ''}`
                 }
               >
                 {link.label}
@@ -47,7 +47,7 @@ export function Header() {
             </Link>
             <a className="header__phone" href="tel:+919000000000">
               <Phone size={15} />
-              {BRAND.phone}
+              <span className="header__phone-text">{BRAND.phone}</span>
             </a>
             <Link to="/contact" className="btn btn--primary btn--sm">
               Enquire
