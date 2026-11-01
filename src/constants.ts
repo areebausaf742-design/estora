@@ -17,7 +17,7 @@ export const NAV_LINKS = [
   { label: 'Rent', href: '/rent' },
   { label: 'New Projects', href: '/new-projects' },
   { label: 'Commercial', href: '/commercial' },
-  { label: 'Sell', href: '/sell' }
+  { label: 'Sell', href: '/sell' },
   { label: 'About', href: '/about' },
   { label: 'Insights', href: '/insights' },
   { label: 'Contact', href: '/contact' },

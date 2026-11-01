@@ -1,7 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
 import type { FilterState } from '../types';
 import { BEDROOMS, CITIES, PROPERTY_TYPES, PURPOSES } from '../constants';
-import { PROPERTIES } from '../data/properties';
 
 interface FiltersProps {
   filters: FilterState;

@@ -79,8 +79,6 @@ export function ListingsExplorer({ purpose }: ListingsExplorerProps) {
     return sorted;
   }, [purpose, filters, sort]);
 
-  const heading = purpose === 'Rent' ? 'Homes for rent' : purpose === 'Commercial' ? 'Commercial spaces' : 'Homes for sale';
-
   return (
     <>
       <div className="listings-toolbar">

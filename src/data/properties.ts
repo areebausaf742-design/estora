@@ -56,7 +56,7 @@ export const PROPERTIES: Property[] = [
     locality: 'Koregaon Park',
     address: '321 Heritage Villas, Lane 7, Koregaon Park, Pune, Maharashtra 411001',
     type: 'Villa',
-    bedrooms: '5 BHK',
+    bedrooms: '5+ BHK',
     bathrooms: 5,
     area: 4800,
     price: 620000000,

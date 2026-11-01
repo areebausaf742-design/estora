@@ -32,7 +32,7 @@ function validate(values: EnquiryValues): FormErrors {
   return errors;
 }
 
-export function EnquiryForm({ property, purpose }: EnquiryFormProps) {
+export function EnquiryForm({ property }: EnquiryFormProps) {
   const [values, setValues] = useState<EnquiryValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submittedReference, setSubmittedReference] = useState<string | null>(null);
