@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Heart, Menu, Phone, X } from 'lucide-react';
-import { BRAND, NAV_LINKS } from '../constants';
+import { BRAND, NAV_LINKS, WHATSAPP_URL } from '../constants';
 import { useSaved } from '../context/SavedContext';
 import { Logo } from './Logo';
 
@@ -26,18 +26,24 @@ export function Header() {
           </Link>
 
           <nav className="nav" aria-label="Primary">
-            {NAV_LINKS.map((link) => (
-              <NavLink
-                key={link.href}
-                to={link.href}
-                end={link.href === '/'}
-                className={({ isActive }) =>
-                  `nav__link whitespace-nowrap${isActive ? ' nav__link--active' : ''}`
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))}
+            {NAV_LINKS.map((link) =>
+              link.href === '/contact' ? (
+                <a key={link.href} href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="nav__link whitespace-nowrap">
+                  {link.label}
+                </a>
+              ) : (
+                <NavLink
+                  key={link.href}
+                  to={link.href}
+                  end={link.href === '/'}
+                  className={({ isActive }) =>
+                    `nav__link whitespace-nowrap${isActive ? ' nav__link--active' : ''}`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ),
+            )}
           </nav>
 
           <div className="header__actions">
@@ -45,13 +51,13 @@ export function Header() {
               <Heart size={18} />
               {savedCount > 0 ? <span className="icon-btn__count">{savedCount}</span> : null}
             </Link>
-            <a className="header__phone" href="tel:+919000000000">
+            <a className="header__phone" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="Chat with Estora on WhatsApp">
               <Phone size={15} />
               <span className="header__phone-text">{BRAND.phone}</span>
             </a>
-            <Link to="/contact" className="btn btn--primary btn--sm">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--sm">
               Enquire
-            </Link>
+            </a>
             <button
               type="button"
               className="icon-btn nav-toggle"
@@ -73,19 +79,25 @@ export function Header() {
         aria-label="Mobile"
       >
         <div className="mobile-nav__list">
-          {NAV_LINKS.map((link) => (
-            <NavLink
-              key={link.href}
-              to={link.href}
-              end={link.href === '/'}
-              className={({ isActive }) =>
-                `mobile-nav__link${isActive ? ' mobile-nav__link--active' : ''}`
-              }
-              onClick={closeNav}
-            >
-              {link.label}
-            </NavLink>
-          ))}
+          {NAV_LINKS.map((link) =>
+            link.href === '/contact' ? (
+              <a key={link.href} href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="mobile-nav__link" onClick={closeNav}>
+                {link.label}
+              </a>
+            ) : (
+              <NavLink
+                key={link.href}
+                to={link.href}
+                end={link.href === '/'}
+                className={({ isActive }) =>
+                  `mobile-nav__link${isActive ? ' mobile-nav__link--active' : ''}`
+                }
+                onClick={closeNav}
+              >
+                {link.label}
+              </NavLink>
+            ),
+          )}
         </div>
       </nav>
     </header>

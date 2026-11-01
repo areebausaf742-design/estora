@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone } from 'lucide-react';
-import { BRAND, CITIES, NAV_LINKS } from '../constants';
+import { BRAND, CITIES, NAV_LINKS, DISPLAY_PHONE, WHATSAPP_URL } from '../constants';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -31,7 +31,11 @@ export function Footer() {
             <ul className="site-footer__links">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link to={link.href}>{link.label}</Link>
+                  {link.href === '/contact' ? (
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  ) : (
+                    <Link to={link.href}>{link.label}</Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -57,8 +61,8 @@ export function Footer() {
               </li>
               <li>
                 <Phone size={16} />
-                <a href="tel:+919000000000" style={{ color: 'inherit', textDecoration: 'none' }}>
-                  {BRAND.phone}
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="Chat with Estora on WhatsApp" style={{ color: 'inherit', textDecoration: 'none' }}>
+                  {DISPLAY_PHONE}
                 </a>
               </li>
               <li>

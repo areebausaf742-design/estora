@@ -1,12 +1,17 @@
+export const WHATSAPP_NUMBER = '919044996869';
+export const DISPLAY_PHONE = '+91 90449 96869';
+export const WHATSAPP_MESSAGE = "Hello Estora, I'd like to enquire about a property.";
+export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
 export const BRAND = {
   name: 'Estora',
   tagline: 'Premium homes. Thoughtfully crafted.',
   rera: 'RERA Reg. No.: [EDITABLE - VERIFY BEFORE LAUNCH]',
   corporateOffice: '[EDITABLE - Corporate Office Address]',
-  phone: '+91 [EDITABLE - Verified office number]',
+  phone: DISPLAY_PHONE,
   email: 'hello@estora.example',
-  whatsappNumber: '9190000000000',
-  whatsappDisplay: '+91 [EDITABLE - Verified WhatsApp number]',
+  whatsappNumber: WHATSAPP_NUMBER,
+  whatsappDisplay: DISPLAY_PHONE,
   disclosure:
     'All properties, prices, images, and details shown on this website are illustrative sample content only. They are not real listings. Replace with verified inventory before launch.',
 } as const;
