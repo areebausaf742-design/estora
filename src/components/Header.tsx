@@ -66,6 +66,7 @@ export function Header() {
         </div>
       </div>
 
+      <div className={`mobile-nav__scrim${open ? ' mobile-nav__scrim--open' : ''}`} onClick={closeNav} aria-hidden="true" />
       <nav
         id="mobile-nav"
         className={`mobile-nav${open ? ' mobile-nav--open' : ''}`}

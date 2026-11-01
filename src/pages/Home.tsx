@@ -1,14 +1,32 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, Award, Leaf, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, Award, Leaf, Search, ShieldCheck } from 'lucide-react';
 import { CITIES, PURPOSES } from '../constants';
 import { BRAND } from '../constants';
 import { FEATURED_PROPERTIES } from '../data/properties';
 import { PROJECTS } from '../data/projects';
 import { INSIGHTS } from '../data/insights';
 import { PropertyCard } from '../components/PropertyCard';
-import { formatINR } from '../utils/format';
+import heroImage from '../assets/estora-hero.png';
 
 export function Home() {
+  const navigate = useNavigate();
+  const [city, setCity] = useState('');
+  const [propertyType, setPropertyType] = useState('');
+  const [budget, setBudget] = useState('');
+  const [bhk, setBhk] = useState('');
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const params = new URLSearchParams();
+    if (city) params.set('city', city);
+    if (propertyType) params.set('type', propertyType);
+    if (budget) params.set('budget', budget);
+    if (bhk) params.set('bhk', bhk);
+    navigate(`/buy${params.toString() ? `?${params.toString()}` : ''}`);
+  };
+
   return (
     <>
       <section className="hero">
@@ -46,7 +64,7 @@ export function Home() {
               </div>
             </div>
             <div className="hero__media">
-              <img src="https://images.unsplash.com/photo-1502672260266-1c1ef1d79938?w=1200&q=80" alt="Modern house exterior at dusk" />
+              <img src={heroImage} alt="Modern house exterior at dusk" />
               <div className="hero__card">
                 <ShieldCheck size={26} />
                 <div>
@@ -56,6 +74,50 @@ export function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="search-panel" aria-label="Search properties">
+        <div className="container">
+          <form className="property-search" onSubmit={handleSearch}>
+            <label className="search-field">
+              <span>City</span>
+              <select value={city} onChange={(event) => setCity(event.target.value)}>
+                <option value="">Any city</option>
+                {CITIES.slice(0, 7).map((item) => <option key={item} value={item}>{item}</option>)}
+              </select>
+            </label>
+            <label className="search-field">
+              <span>Property type</span>
+              <select value={propertyType} onChange={(event) => setPropertyType(event.target.value)}>
+                <option value="">Any type</option>
+                {PURPOSES.map((item) => <option key={item} value={item}>{item}</option>)}
+              </select>
+            </label>
+            <label className="search-field">
+              <span>Budget</span>
+              <select value={budget} onChange={(event) => setBudget(event.target.value)}>
+                <option value="">Any budget</option>
+                <option value="under-1cr">Under ₹1 Cr</option>
+                <option value="1-2cr">₹1–2 Cr</option>
+                <option value="2-5cr">₹2–5 Cr</option>
+                <option value="above-5cr">Above ₹5 Cr</option>
+              </select>
+            </label>
+            <label className="search-field">
+              <span>BHK</span>
+              <select value={bhk} onChange={(event) => setBhk(event.target.value)}>
+                <option value="">Any BHK</option>
+                <option value="2">2 BHK</option>
+                <option value="3">3 BHK</option>
+                <option value="4">4 BHK + Study</option>
+              </select>
+            </label>
+            <button className="btn btn--primary search-submit" type="submit">
+              <Search size={17} aria-hidden="true" />
+              Search homes
+            </button>
+          </form>
         </div>
       </section>
 

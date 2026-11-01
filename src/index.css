@@ -1,23 +1,23 @@
-﻿/* ============================================================
+/* ============================================================
    ESTORA - Design System
    Warm ivory - Deep charcoal - Forest green - Antique brass
    ============================================================ */
 
 :root {
-  --ivory: #FDFBF7;
-  --ivory-deep: #F6F0E5;
+  --ivory: #FBF8F2;
+  --ivory-deep: #F3EBDD;
   --surface: #FFFFFF;
-  --charcoal: #1F1C18;
-  --charcoal-2: #2B2621;
-  --ink: #2B2621;
-  --muted: #6E665C;
-  --forest: #3A5A4A;
-  --forest-dark: #2E4437;
-  --forest-tint: rgba(58, 90, 74, 0.09);
-  --brass: #C5A059;
-  --brass-dark: #A88341;
-  --brass-tint: rgba(197, 160, 89, 0.18);
-  --line: #E7E0D6;
+  --charcoal: #1B1B18;
+  --charcoal-2: #25251F;
+  --ink: #1B1B18;
+  --muted: #6B675E;
+  --forest: #2F4A3C;
+  --forest-dark: #243A30;
+  --forest-tint: rgba(47, 74, 60, 0.09);
+  --brass: #B08A3E;
+  --brass-dark: #8D6D2F;
+  --brass-tint: rgba(176, 138, 62, 0.18);
+  --line: #E6DCC8;
   --danger: #A63A2E;
   --danger-tint: rgba(166, 58, 46, 0.08);
   --shadow-sm: 0 1px 2px rgba(31, 28, 24, 0.05), 0 6px 18px rgba(31, 28, 24, 0.06);
@@ -545,6 +545,16 @@ button { font-family: inherit; }
   .cta-panel { padding: 32px 22px; }
 }
 
+/* ---------- Hero search ---------- */
+.search-panel { position: relative; z-index: 2; margin-top: -34px; }
+.property-search { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; align-items: end; gap: 1px; padding: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-lg); }
+.search-field { min-width: 0; padding: 8px 18px; border-right: 1px solid var(--line); }
+.search-field span { display: block; color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 4px; }
+.search-field select { width: 100%; border: 0; appearance: none; background: transparent; color: var(--charcoal); font: 500 .92rem var(--font-body); padding: 0 20px 0 0; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 8px) 55%, 100% 55%; background-size: 5px 5px; background-repeat: no-repeat; }
+.search-field select:focus { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 3px; }
+.search-submit { min-height: 52px; margin-left: 8px; }
+.mobile-nav__scrim { display: none; }
+
 @media (max-width: 560px) {
   .header__inner { gap: 12px; }
   .brand__tag { display: none; }
@@ -552,4 +562,17 @@ button { font-family: inherit; }
   .hero__card { left: 14px; right: 14px; bottom: 14px; padding: 14px 16px; }
   .site-footer__top { grid-template-columns: 1fr; gap: 32px; }
   .site-footer__bottom { justify-content: flex-start; }
+  .property-search { grid-template-columns: 1fr 1fr; gap: 0; padding: 8px; }
+  .search-field { padding: 11px 12px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .search-field:nth-child(odd) { border-right: 1px solid var(--line); }
+  .search-submit { grid-column: 1 / -1; width: 100%; margin: 10px 0 0; }
+}
+
+@media (max-width: 1023px) {
+  .mobile-nav { position: fixed; inset: var(--header-h) 0 0 auto; width: min(88vw, 420px); height: calc(100svh - var(--header-h)); padding: 32px 24px; border: 0; border-left: 1px solid var(--line); box-shadow: var(--shadow-lg); transform: translateX(100%); transition: transform .3s ease; }
+  .mobile-nav--open { transform: translateX(0); }
+  .mobile-nav__list { gap: 8px; }
+  .mobile-nav__link { padding: 12px 6px; font-family: var(--font-display); font-size: clamp(1.55rem, 5vw, 2.1rem); line-height: 1.1; }
+  .mobile-nav__scrim { display: block; position: fixed; inset: var(--header-h) 0 0; background: rgba(27, 27, 24, .32); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .mobile-nav__scrim--open { opacity: 1; pointer-events: auto; }
 }
