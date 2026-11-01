@@ -1,21 +1,36 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Award, Leaf, Search, ShieldCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  Award,
+  Briefcase,
+  Building2,
+  KeyRound,
+  Leaf,
+  Search,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react';
 import { CITIES, PURPOSES } from '../constants';
-import { BRAND } from '../constants';
 import { FEATURED_PROPERTIES } from '../data/properties';
-import { PROJECTS } from '../data/projects';
-import { INSIGHTS } from '../data/insights';
 import { PropertyCard } from '../components/PropertyCard';
+import { AiSearchBox } from '../components/AiSearchBox';
+import { EmiCalculator } from '../components/EmiCalculator';
+import { MakeLeadCaptureModal } from '../components/MakeLeadCaptureModal';
+import { useLanguage } from '../context/LanguageContext';
 import heroImage from '../assets/estora-hero.png';
+import type { ParsedSearchQuery } from '../utils/aiSearch';
 
 export function Home() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [city, setCity] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [budget, setBudget] = useState('');
   const [bhk, setBhk] = useState('');
+
+  const [makeModalOpen, setMakeModalOpen] = useState(false);
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -23,8 +38,25 @@ export function Home() {
     if (city) params.set('city', city);
     if (propertyType) params.set('type', propertyType);
     if (budget) params.set('budget', budget);
-    if (bhk) params.set('bhk', bhk);
+    if (bhk) params.set('bedrooms', bhk);
     navigate(`/buy${params.toString() ? `?${params.toString()}` : ''}`);
+  };
+
+  const handleAiSearch = (parsed: ParsedSearchQuery) => {
+    const targetPath = parsed.purpose === 'Rent'
+      ? '/rent'
+      : parsed.purpose === 'Commercial'
+      ? '/commercial'
+      : '/buy';
+
+    const params = new URLSearchParams();
+    if (parsed.city) params.set('city', parsed.city);
+    if (parsed.locality) params.set('locality', parsed.locality);
+    if (parsed.bedrooms) params.set('bedrooms', parsed.bedrooms);
+    if (parsed.propertyType) params.set('type', parsed.propertyType);
+    if (parsed.maxPrice) params.set('maxPrice', String(parsed.maxPrice));
+
+    navigate(`${targetPath}${params.toString() ? `?${params.toString()}` : ''}`);
   };
 
   return (
@@ -33,43 +65,55 @@ export function Home() {
         <div className="container">
           <div className="hero__grid">
             <div>
-              <span className="eyebrow">Estates &amp; Architecture</span>
-              <h1 className="hero__title">Quiet luxury. Serious addresses.</h1>
+              <span className="eyebrow">
+                <Sparkles size={14} className="text-[#B08A3E] mr-1" />
+                Estates &amp; Architecture
+              </span>
+              <h1 className="hero__title">{t('tagline')}</h1>
               <p className="hero__lede">
-                Estora is a premium real-estate practice in India, curating homes where design,
-                land and light come together. Buy, rent and invest with confidence.
+                {t('hero_sub')}
               </p>
-              <div className="hero__actions">
+              <div className="hero__actions flex flex-wrap gap-3">
                 <Link to="/buy" className="btn btn--primary btn--lg">
-                  Explore homes for sale
+                  {t('hero_cta_buy')}
                   <ArrowRight size={17} />
                 </Link>
                 <Link to="/rent" className="btn btn--outline btn--lg">
-                  Rent a home
+                  {t('hero_cta_rent')}
+                </Link>
+                <Link to="/new-projects" className="btn btn--outline btn--lg">
+                  {t('hero_cta_projects')}
                 </Link>
               </div>
               <div className="hero__meta">
                 <span>
                   <ShieldCheck size={16} />
-                  RERA disclosures
+                  {t('rera_documented')}
                 </span>
                 <span>
                   <Award size={16} />
-                  Verified partners
+                  {t('verified_partners')}
                 </span>
                 <span>
                   <Leaf size={16} />
-                  Thoughtful design
+                  {t('thoughtful_design')}
                 </span>
               </div>
             </div>
             <div className="hero__media">
-              <img src={heroImage} alt="Modern house exterior at dusk" />
+              <img
+                src={heroImage}
+                alt="Modern luxury house architecture at dusk"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src =
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80';
+                }}
+              />
               <div className="hero__card">
-                <ShieldCheck size={26} />
+                <ShieldCheck size={26} className="text-[#B08A3E]" />
                 <div>
-                  <strong>RERA-documented processes</strong>
-                  <span>Transparent paperwork and disclosures</span>
+                  <strong>{t('rera_documented')}</strong>
+                  <span>{t('rera_sub')}</span>
                 </div>
               </div>
             </div>
@@ -77,27 +121,42 @@ export function Home() {
         </div>
       </section>
 
+      {/* AI Search & Classic Filter Hub */}
       <section className="search-panel" aria-label="Search properties">
-        <div className="container">
+        <div className="container space-y-5">
+          {/* AI Natural Language Search */}
+          <div className="bg-white rounded-2xl p-4 border border-[#E6DCC8] shadow-sm">
+            <AiSearchBox onSearch={handleAiSearch} />
+          </div>
+
+          {/* Quick Filter Form */}
           <form className="property-search" onSubmit={handleSearch}>
             <label className="search-field">
-              <span>City</span>
+              <span>{t('city_label')}</span>
               <select value={city} onChange={(event) => setCity(event.target.value)}>
-                <option value="">Any city</option>
-                {CITIES.slice(0, 7).map((item) => <option key={item} value={item}>{item}</option>)}
+                <option value="">{t('all_cities')}</option>
+                {CITIES.slice(0, 7).map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="search-field">
-              <span>Property type</span>
+              <span>{t('type_label')}</span>
               <select value={propertyType} onChange={(event) => setPropertyType(event.target.value)}>
-                <option value="">Any type</option>
-                {PURPOSES.map((item) => <option key={item} value={item}>{item}</option>)}
+                <option value="">{t('all_types')}</option>
+                {PURPOSES.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="search-field">
-              <span>Budget</span>
+              <span>{t('budget_label')}</span>
               <select value={budget} onChange={(event) => setBudget(event.target.value)}>
-                <option value="">Any budget</option>
+                <option value="">{t('all_budgets')}</option>
                 <option value="under-1cr">Under ₹1 Cr</option>
                 <option value="1-2cr">₹1–2 Cr</option>
                 <option value="2-5cr">₹2–5 Cr</option>
@@ -105,207 +164,157 @@ export function Home() {
               </select>
             </label>
             <label className="search-field">
-              <span>BHK</span>
+              <span>{t('bedrooms_label')}</span>
               <select value={bhk} onChange={(event) => setBhk(event.target.value)}>
-                <option value="">Any BHK</option>
-                <option value="2">2 BHK</option>
-                <option value="3">3 BHK</option>
-                <option value="4">4 BHK + Study</option>
+                <option value="">{t('all_bedrooms')}</option>
+                <option value="2 BHK">2 BHK</option>
+                <option value="3 BHK">3 BHK</option>
+                <option value="4 BHK">4 BHK</option>
+                <option value="5+ BHK">5+ BHK</option>
               </select>
             </label>
             <button className="btn btn--primary search-submit" type="submit">
               <Search size={17} aria-hidden="true" />
-              Search homes
+              <span>Search</span>
             </button>
           </form>
         </div>
       </section>
 
-      <div className="container">
-        <div className="notice" style={{ marginBottom: 56 }}>
-          <ShieldCheck size={20} />
-          <span>{BRAND.disclosure}</span>
-        </div>
-      </div>
-
+      {/* Featured Properties */}
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">Featured</span>
-            <h2 className="section-title">Homes our clients are considering</h2>
-            <p className="section-sub">
-              A preview of the residences currently in Estora curation. All details are illustrative samples.
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+              <span className="eyebrow">{t('sort_featured')}</span>
+              <h2 className="section-title">Considered architectural addresses</h2>
+              <p className="section-sub">
+                A preview of residences currently in Estora curation with certified RERA filings.
+              </p>
+            </div>
+            <Link to="/buy" className="btn btn--outline btn--sm self-start sm:self-auto">
+              View all homes
+              <ArrowRight size={15} />
+            </Link>
           </div>
-          <div className="property-grid">
+          <div className="property-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {FEATURED_PROPERTIES.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link to="/buy" className="btn btn--outline">
-              View all homes
-              <ArrowRight size={16} />
-            </Link>
-          </div>
         </div>
       </section>
 
+      {/* Category Pillars (Buy, Rent, New Projects, Commercial) */}
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container split">
-          <div>
-            <span className="eyebrow">For families</span>
-            <h2 className="section-title">Homes for sale</h2>
-            <p className="section-sub">
-              Curated apartments, independent houses and villas across India's leading metros.
-            </p>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <Link to="/buy" className="btn btn--primary">
-              Browse buy properties
-              <ArrowRight size={16} />
+        <div className="container">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Link
+              to="/buy"
+              className="p-6 rounded-3xl bg-white border border-[#E6DCC8] hover:border-[#2F4A3C] shadow-sm hover:shadow-md transition-all group block text-inherit no-underline"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-[#F3EBDD] text-[#2F4A3C] flex items-center justify-center mb-4 group-hover:bg-[#2F4A3C] group-hover:text-white transition-colors">
+                <Sparkles size={22} />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-[#1B1B18] m-0 mb-1">{t('nav_buy')}</h3>
+              <p className="text-xs text-[#6B675E] leading-relaxed mb-4">
+                Penthouses, sea-facing residences, and private villas for sale.
+              </p>
+              <span className="text-xs font-semibold text-[#2F4A3C] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                Browse Buy <ArrowRight size={13} />
+              </span>
+            </Link>
+
+            <Link
+              to="/rent"
+              className="p-6 rounded-3xl bg-white border border-[#E6DCC8] hover:border-[#2F4A3C] shadow-sm hover:shadow-md transition-all group block text-inherit no-underline"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-[#F3EBDD] text-[#2F4A3C] flex items-center justify-center mb-4 group-hover:bg-[#2F4A3C] group-hover:text-white transition-colors">
+                <KeyRound size={22} />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-[#1B1B18] m-0 mb-1">{t('nav_rent')}</h3>
+              <p className="text-xs text-[#6B675E] leading-relaxed mb-4">
+                Furnished high-rise apartments and estates for short or multi-year leases.
+              </p>
+              <span className="text-xs font-semibold text-[#2F4A3C] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                Browse Rent <ArrowRight size={13} />
+              </span>
+            </Link>
+
+            <Link
+              to="/new-projects"
+              className="p-6 rounded-3xl bg-white border border-[#E6DCC8] hover:border-[#2F4A3C] shadow-sm hover:shadow-md transition-all group block text-inherit no-underline"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-[#F3EBDD] text-[#2F4A3C] flex items-center justify-center mb-4 group-hover:bg-[#2F4A3C] group-hover:text-white transition-colors">
+                <Building2 size={22} />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-[#1B1B18] m-0 mb-1">{t('nav_new_projects')}</h3>
+              <p className="text-xs text-[#6B675E] leading-relaxed mb-4">
+                Pre-launch &amp; under-construction developments by India's top architects.
+              </p>
+              <span className="text-xs font-semibold text-[#2F4A3C] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                Explore Projects <ArrowRight size={13} />
+              </span>
+            </Link>
+
+            <Link
+              to="/commercial"
+              className="p-6 rounded-3xl bg-white border border-[#E6DCC8] hover:border-[#2F4A3C] shadow-sm hover:shadow-md transition-all group block text-inherit no-underline"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-[#F3EBDD] text-[#2F4A3C] flex items-center justify-center mb-4 group-hover:bg-[#2F4A3C] group-hover:text-white transition-colors">
+                <Briefcase size={22} />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-[#1B1B18] m-0 mb-1">{t('nav_commercial')}</h3>
+              <p className="text-xs text-[#6B675E] leading-relaxed mb-4">
+                Grade-A offices in BKC, Cyber City, and retail flagships in prime districts.
+              </p>
+              <span className="text-xs font-semibold text-[#2F4A3C] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                Commercial Hub <ArrowRight size={13} />
+              </span>
             </Link>
           </div>
         </div>
       </section>
 
+      {/* Embedded EMI Calculator on Home */}
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container split">
-          <div>
-            <span className="eyebrow">For residents</span>
-            <h2 className="section-title">Homes for rent</h2>
-            <p className="section-sub">
-              Fully and semi-furnished residences for short and long stays in premium localities.
-            </p>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <Link to="/rent" className="btn btn--primary">
-              Browse rent properties
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+        <div className="container">
+          <EmiCalculator
+            onApplyLoan={() => setMakeModalOpen(true)}
+          />
         </div>
       </section>
 
+      {/* City Hubs */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="section-head">
-            <span className="eyebrow">Markets</span>
-            <h2 className="section-title">Cities we serve</h2>
-            <p className="section-sub">Eight principal markets across India.</p>
+            <span className="eyebrow">Metro Markets</span>
+            <h2 className="section-title">Cities we curate</h2>
+            <p className="section-sub">Considered micro-markets with verified masterplans.</p>
           </div>
           <div className="city-grid">
-            {CITIES.map((city) => {
-              const count = FEATURED_PROPERTIES.filter((p) => p.city === city).length;
-              return (
-                <Link key={city} to={`/buy?city=${encodeURIComponent(city)}`} className="city-card">
-                  <div className="city-card__name">{city}</div>
-                  <div className="city-card__count">{count} curated sample listings</div>
-                  <div className="city-card__arrow">
-                    <ArrowRight size={18} />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">New launches</span>
-            <h2 className="section-title">Upcoming residences</h2>
-            <p className="section-sub">Pre-launch and under-construction sample developments.</p>
-          </div>
-          <div className="content-grid">
-            {PROJECTS.slice(0, 3).map((project) => (
-              <Link key={project.id} to="/new-projects" className="post-card">
-                <span className="post-card__cat">{project.status}</span>
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
-                <span className="post-card__meta">
-                  <span>{project.city}</span>
-                  <span>{project.possession}</span>
-                </span>
+            {CITIES.map((cityName) => (
+              <Link key={cityName} to={`/buy?city=${encodeURIComponent(cityName)}`} className="city-card">
+                <div className="city-card__name">{cityName}</div>
+                <div className="city-card__count">Curated properties</div>
+                <div className="city-card__arrow">
+                  <ArrowRight size={18} />
+                </div>
               </Link>
             ))}
           </div>
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link to="/new-projects" className="btn btn--outline">
-              All new projects
-              <ArrowRight size={16} />
-            </Link>
-          </div>
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">Why Estora</span>
-            <h2 className="section-title">A quieter way to buy</h2>
-          </div>
-          <div className="value-grid">
-            <div className="value-card">
-              <div className="value-card__icon"><Leaf size={22} /></div>
-              <h3>Thoughtful design</h3>
-              <p>Residences matched to light, climate and daily rituals of Indian living.</p>
-            </div>
-            <div className="value-card">
-              <div className="value-card__icon"><ShieldCheck size={22} /></div>
-              <h3>Transparent process</h3>
-              <p>RERA-aligned workflows, clear pricing and honest disclosures.</p>
-            </div>
-            <div className="value-card">
-              <div className="value-card__icon"><Award size={22} /></div>
-              <h3>Curated network</h3>
-              <p>An advisor team with deep knowledge of Indian property markets.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">Insights</span>
-            <h2 className="section-title">Notes on Indian living</h2>
-          </div>
-          <div className="content-grid">
-            {INSIGHTS.slice(0, 3).map((insight) => (
-              <Link key={insight.slug} to="/insights" className="post-card">
-                <span className="post-card__cat">{insight.category}</span>
-                <h3>{insight.title}</h3>
-                <p>{insight.excerpt}</p>
-                <span className="post-card__meta">
-                  <span>{insight.date}</span>
-                  <span>{insight.readMinutes} min read</span>
-                </span>
-              </Link>
-            ))}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link to="/insights" className="btn btn--outline">
-              Read insights
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="cta-panel">
-            <h2>Begin your home search</h2>
-            <p>Tell us what you are looking for and our advisors will curate a shortlist.</p>
-            <div className="hero__actions">
-              <Link to="/contact" className="btn btn--brass btn--lg">Talk to an advisor</Link>
-              <Link to="/sell" className="btn btn--outline btn--lg" style={{ color: 'var(--ivory)', borderColor: 'rgba(253,251,247,0.5)' }}>Sell or list</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Lead Capture Modal */}
+      <MakeLeadCaptureModal
+        isOpen={makeModalOpen}
+        onClose={() => setMakeModalOpen(false)}
+        leadType="loan_calc"
+        propertyTitle="Home Loan Pre-Approval Consultation"
+        initialMessage="Requesting home loan consultation and bank rate comparison."
+      />
     </>
   );
 }

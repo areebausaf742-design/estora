@@ -37,6 +37,9 @@ export interface Property {
   createdAt: string;
   floor?: string;
   possession?: string;
+  developerName?: string;
+  lat: number;
+  lng: number;
 }
 
 export interface FilterState {

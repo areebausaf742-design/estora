@@ -1,0 +1,29 @@
+[1mdiff --git a/.env.example b/.env.example[m
+[1mindex 7b02a60..c51fa07 100644[m
+[1m--- a/.env.example[m
+[1m+++ b/.env.example[m
+[36m@@ -1 +1 @@[m
+[31m-AI_API_KEY=[m
+[32m+[m[32mAI_API_KEY=[m
+\ No newline at end of file[m
+[1mdiff --git a/tsconfig.app.json b/tsconfig.app.json[m
+[1mindex 6830b6f..53d95c0 100644[m
+[1m--- a/tsconfig.app.json[m
+[1m+++ b/tsconfig.app.json[m
+[36m@@ -4,7 +4,7 @@[m
+     "target": "es2023",[m
+     "lib": ["ES2023", "DOM"],[m
+     "module": "esnext",[m
+[31m-    "types": ["vite/client"],[m
+[32m+[m[32m    "types": ["vite/client", "node"],[m
+     "allowArbitraryExtensions": true,[m
+     "skipLibCheck": true,[m
+ [m
+[36m@@ -22,5 +22,6 @@[m
+     "erasableSyntaxOnly": true,[m
+     "noFallthroughCasesInSwitch": true[m
+   },[m
+[31m-  "include": ["src"][m
+[32m+[m[32m  "include": ["src"],[m
+[32m+[m[32m  "exclude": ["src/**/*.test.ts"][m
+ }[m

@@ -11,6 +11,7 @@ interface SavedContextValue {
   savedIds: string[];
   savedProperties: Property[];
   toggleSaved: (id: string) => void;
+  clearSaved: () => void;
   isSaved: (id: string) => boolean;
   savedCount: number;
   compareIds: string[];
@@ -71,6 +72,10 @@ export function SavedProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const clearSaved = useCallback(() => {
+    setSavedIds([]);
+  }, []);
+
   const isSaved = useCallback((id: string) => savedIds.includes(id), [savedIds]);
 
   const toggleCompare = useCallback((id: string): boolean => {
@@ -110,6 +115,7 @@ export function SavedProvider({ children }: { children: ReactNode }) {
     savedIds,
     savedProperties,
     toggleSaved,
+    clearSaved,
     isSaved,
     savedCount: savedIds.length,
     compareIds,
